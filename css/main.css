@@ -10,6 +10,11 @@
 	position: absolute;
 	top: 0;
 	left: 0;
+	-o-transform: scaleX(-1);
+	-ms-transform: scaleX(-1);
+	-moz-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
 }
 #photo {
 	position: absolute;
