@@ -53,6 +53,10 @@
 		if (width && height) {
 			canvas.width = width;
 			canvas.height = height;
+			
+			context.translate(canvas.width, 0);
+			context.scale(-1, 1);
+			
 			context.drawImage(video, 0, 0, width, height);
 			photo.setAttribute('src', canvas.toDataURL('image/png'));
 		} else {
