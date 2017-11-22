@@ -1,6 +1,6 @@
 .booth {
 	width: 810px;
-	height: 350px;
+	height: 300px;
 	background-color: #ccc;
 	border: 10px solid #ddd;
 	margin: 0 auto;
@@ -22,15 +22,7 @@
 	right: 0;
 	clear: both;
 }
-#capture {
-	position: absolute;
-	bottom: 0;
-}
-.booth-capture-button {
-	display: block;
-	padding: 10px 20px;
-	background-color: firebrick;
-	color: #fff;
-	text-align: center;
-	text-decoration: none;
+.panel {
+	margin: 20px auto;
+	width: 810px;
 }
