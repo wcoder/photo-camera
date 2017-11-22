@@ -26,3 +26,6 @@
 	margin: 20px auto;
 	width: 810px;
 }
+#error {
+	color: #f00;
+}
