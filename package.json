@@ -1,0 +1,28 @@
+{
+  "name": "photo-camera",
+  "version": "1.0.0",
+  "description": "Simple demo for taking photo from webcam with JavaScript.",
+  "main": "index.js",
+  "dependencies": {
+    "connect": "^3.6.5",
+    "serve-static": "^1.13.1"
+  },
+  "devDependencies": {
+    "connect": "^3.6.5",
+    "serve-static": "^1.13.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wcoder/photo-camera.git"
+  },
+  "author": "Yauheni Pakala",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wcoder/photo-camera/issues"
+  },
+  "homepage": "https://github.com/wcoder/photo-camera#readme"
+}
