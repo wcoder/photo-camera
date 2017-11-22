@@ -44,7 +44,7 @@
 	// events
 	
 	capture.addEventListener('click', function(e) {
-		w.setTimeout(takepicture, 0);
+		window.setTimeout(takepicture, 0);
 		e.preventDefault();
 	}, false);
 	
