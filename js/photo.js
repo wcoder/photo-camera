@@ -8,9 +8,21 @@
 		capture = document.querySelector('#capture'),
 		photo = document.querySelector('#photo'),
 		sources = document.querySelector('#sources'),
+		filters = document.querySelector('#filters'),
 		error = document.querySelector('#error'),
 		_stream = null,
-		vendorUrl = window.URL || window.webkitURL;
+		vendorUrl = window.URL || window.webkitURL,
+		filtersMap = {
+			none: 'none',
+			blackandwhite: 'url(#blackandwhite)',
+			huerotate: 'hue-rotate(90deg)',
+			sepia: 'sepia()',
+			invert: 'invert()',
+			contrast: 'contrast(200%)',
+			brightness: 'brightness(0.5)',
+			saturate: 'saturate()',
+			blur: 'blur(5px)', // TODO: fix difference between video & canvas
+		};
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices
 	if (!navigator.mediaDevices ||
@@ -39,6 +51,11 @@
 		e.preventDefault();
 	}, false);
 
+	filters.addEventListener('change', function(e) {
+		video.style.filter = getFilter(e.target.value);
+		e.preventDefault();
+	}, false);
+
 	// private
 
 	function createCanvas() {
@@ -63,6 +80,9 @@
 
 			context.translate(canvas.width, 0);
 			context.scale(-1, 1);
+
+			// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter
+			context.filter = getFilter(filters.value);
 
 			context.drawImage(video, 0, 0, width, height);
 			photo.setAttribute('src', canvas.toDataURL('image/png'));
@@ -142,6 +162,15 @@
 	function handleError(error) {
 		console.error(error);
 		log(error.message || error);
+	}
+
+	function getFilter(value) {
+		try {
+			return filtersMap[value];
+		} catch (e) {
+			console.error(e);
+			return 'none';
+		}
 	}
 
 	function log(message) {
