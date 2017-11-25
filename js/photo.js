@@ -1,53 +1,43 @@
 (function() {
 	'use strict';
-	
+
 	var width = 1280,
-		height = 720, 
+		height = 720,
 		video = document.querySelector('#video'),
 		canvas = createCanvas(),
 		capture = document.querySelector('#capture'),
 		photo = document.querySelector('#photo'),
 		sources = document.querySelector('#sources'),
 		error = document.querySelector('#error'),
+		_stream = null,
 		vendorUrl = window.URL || window.webkitURL;
-	
-	// https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getUserMedia
-	
-	if (!navigator.mediaDevices ||
-		!navigator.mediaDevices.getUserMedia) {
-
-		log('getUserMedia() not supported');
-	} else {
-
-		var constraints = {
-			video: {
-				width: width,
-				height: height
-			},
-			audio: false
-		};
-
-		navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
-	}
-
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices
 	if (!navigator.mediaDevices ||
 		!navigator.mediaDevices.enumerateDevices) {
 
-  		log('enumerateDevices() not supported.');
+		log('enumerateDevices() not supported.');
 	} else {
 
-		navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
+		navigator.mediaDevices.enumerateDevices()
+			.then(gotDevices)
+			.then(function () {
+				initGetUserMedia(sources.value);
+			})
+			.catch(handleError);
 	}
-	
+
 	// events
-	
+
 	capture.addEventListener('click', function(e) {
-		window.setTimeout(takepicture, 0);
+		window.setTimeout(takePicture, 0);
 		e.preventDefault();
 	}, false);
-	
+
+	sources.addEventListener('change', function(e) {
+		initGetUserMedia(e.target.value);
+		e.preventDefault();
+	}, false);
 
 	// private
 
@@ -64,24 +54,24 @@
 		e.text = text;
 		return e;
 	}
-	
-	function takepicture() {
+
+	function takePicture() {
 		var context = canvas.getContext('2d');
 		if (width && height) {
 			canvas.width = width;
 			canvas.height = height;
-			
+
 			context.translate(canvas.width, 0);
 			context.scale(-1, 1);
-			
+
 			context.drawImage(video, 0, 0, width, height);
 			photo.setAttribute('src', canvas.toDataURL('image/png'));
 		} else {
-			clearphoto();
+			clearPhoto();
 		}
 	}
-	
-	function clearphoto() {
+
+	function clearPhoto() {
 		var context = canvas.getContext('2d');
 		context.fillStyle = '#AAA';
 		context.fillRect(0, 0, canvas.width, canvas.height);
@@ -90,11 +80,53 @@
 		photo.setAttribute('src', data);
 	}
 
-	function gotStream(stream) {
+	function initGetUserMedia(deviceId) {
+		if (!deviceId) {
+			log('Selected device not loaded [DeviceId="' + deviceId + '"]');
+			stopPlay();
+			return;
+		}
+
+		if (!navigator.mediaDevices ||
+			!navigator.mediaDevices.getUserMedia) {
+
+			log('getUserMedia() not supported');
+		} else {
+
+			var constraints = {
+				video: {
+					width: width,
+					height: height,
+					deviceId: deviceId
+				},
+				audio: false
+			};
+
+			// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+			navigator.mediaDevices.getUserMedia(constraints).then(playStream).catch(handleError);
+		}
+	}
+
+	function playStream(stream) {
+		_stream = stream;
+
 		video.src = vendorUrl.createObjectURL(stream);
 		video.onloadedmetadata = function(e) {
 			video.play();
 		};
+	}
+
+	function stopPlay() {
+		// disable stream
+		if (_stream != null) {
+			_stream.getTracks().forEach(function(track) {
+				track.stop();
+			});
+			_stream = null;
+		}
+		// disable video
+		video.pause();
+		video.src = '';
 	}
 
 	function gotDevices(deviceInfos) {
@@ -109,11 +141,11 @@
 
 	function handleError(error) {
 		console.error(error);
-		log(error.message);
+		log(error.message || error);
 	}
 
 	function log(message) {
 		error.innerHTML += '<br>Error: ' + message;
 	}
-	
+
 })();
