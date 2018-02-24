@@ -4,9 +4,8 @@
 	var width = 1280,
 		height = 720,
 		video = document.querySelector('#video'),
-		canvas = createCanvas(),
 		capture = document.querySelector('#capture'),
-		photo = document.querySelector('#photo'),
+		canvas = document.querySelector('#canvas'),
 		sources = document.querySelector('#sources'),
 		filters = document.querySelector('#filters'),
 		error = document.querySelector('#error'),
@@ -21,7 +20,7 @@
 			contrast: 'contrast(200%)',
 			brightness: 'brightness(0.5)',
 			saturate: 'saturate()',
-			blur: 'blur(5px)', // TODO: fix difference between video & canvas
+			blur: 'blur(5px)',
 		};
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices
@@ -58,13 +57,6 @@
 
 	// private
 
-	function createCanvas() {
-		var e = document.createElement('canvas');
-		e.width = width;
-		e.height = height;
-		return e;
-	}
-
 	function createOption(value, text) {
 		var e = document.createElement('option');
 		e.value = value;
@@ -73,6 +65,9 @@
 	}
 
 	function takePicture() {
+
+		canvas.style.filter = getFilter(filters.value);
+
 		var context = canvas.getContext('2d');
 		if (width && height) {
 			canvas.width = width;
@@ -81,11 +76,7 @@
 			context.translate(canvas.width, 0);
 			context.scale(-1, 1);
 
-			// https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter
-			context.filter = getFilter(filters.value);
-
 			context.drawImage(video, 0, 0, width, height);
-			photo.setAttribute('src', canvas.toDataURL('image/png'));
 		} else {
 			clearPhoto();
 		}
@@ -95,9 +86,6 @@
 		var context = canvas.getContext('2d');
 		context.fillStyle = '#AAA';
 		context.fillRect(0, 0, canvas.width, canvas.height);
-
-		var data = canvas.toDataURL('image/png');
-		photo.setAttribute('src', data);
 	}
 
 	function initGetUserMedia(deviceId) {

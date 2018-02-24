@@ -16,11 +16,12 @@
 	-webkit-transform: scaleX(-1);
 	transform: scaleX(-1);
 }
-#photo {
+#canvas {
 	position: absolute;
 	top: 38px;
 	right: 0;
 	clear: both;
+	width: 400px;
 }
 .panel {
 	margin: 20px auto;
