@@ -1,16 +1,19 @@
-(function() {
+/*global
+    window
+*/
+(function (_w, _d) {
     'use strict';
 
     var width = 1280,
         height = 720,
-        video = document.querySelector('#video'),
-        capture = document.querySelector('#capture'),
-        canvas = document.querySelector('#canvas'),
-        sources = document.querySelector('#sources'),
-        filters = document.querySelector('#filters'),
-        error = document.querySelector('#error'),
+        video = _d.querySelector('#video'),
+        capture = _d.querySelector('#capture'),
+        canvas = _d.querySelector('#canvas'),
+        sources = _d.querySelector('#sources'),
+        filters = _d.querySelector('#filters'),
+        error = _d.querySelector('#error'),
         _stream = null,
-        vendorUrl = window.URL || window.webkitURL,
+        vendorUrl = _w.URL || _w.webkitURL,
         filtersMap = {
             none: 'none',
             blackandwhite: 'url(#blackandwhite)',
@@ -20,48 +23,35 @@
             contrast: 'contrast(200%)',
             brightness: 'brightness(0.5)',
             saturate: 'saturate()',
-            blur: 'blur(5px)',
+            blur: 'blur(5px)'
         };
 
-    // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices
-    if (!navigator.mediaDevices ||
-        !navigator.mediaDevices.enumerateDevices) {
+    // function
 
-        log('enumerateDevices() not supported.');
-    } else {
-
-        navigator.mediaDevices.enumerateDevices()
-            .then(gotDevices)
-            .then(function () {
-                initGetUserMedia(sources.value);
-            })
-            .catch(handleError);
+    function getFilter(value) {
+        try {
+            return filtersMap[value];
+        } catch (e) {
+            _w.console.error(e);
+            return 'none';
+        }
     }
 
-    // events
-
-    capture.addEventListener('click', function(e) {
-        window.setTimeout(takePicture, 0);
-        e.preventDefault();
-    }, false);
-
-    sources.addEventListener('change', function(e) {
-        initGetUserMedia(e.target.value);
-        e.preventDefault();
-    }, false);
-
-    filters.addEventListener('change', function(e) {
-        video.style.filter = getFilter(e.target.value);
-        e.preventDefault();
-    }, false);
-
-    // private
+    function log(message) {
+        error.innerHTML += '<br>Error: ' + message;
+    }
 
     function createOption(value, text) {
-        var e = document.createElement('option');
+        var e = _d.createElement('option');
         e.value = value;
         e.text = text;
         return e;
+    }
+
+    function clearPhoto() {
+        var context = canvas.getContext('2d');
+        context.fillStyle = '#AAA';
+        context.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     function takePicture() {
@@ -82,10 +72,31 @@
         }
     }
 
-    function clearPhoto() {
-        var context = canvas.getContext('2d');
-        context.fillStyle = '#AAA';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+    function playStream(stream) {
+        _stream = stream;
+
+        video.src = vendorUrl.createObjectURL(stream);
+        video.onloadedmetadata = function () {
+            video.play();
+        };
+    }
+
+    function stopPlay() {
+        // disable stream
+        if (_stream !== null) {
+            _stream.getTracks().forEach(function (track) {
+                track.stop();
+            });
+            _stream = null;
+        }
+        // disable video
+        video.pause();
+        video.src = '';
+    }
+
+    function handleError(error) {
+        _w.console.error(error);
+        log(error.message || error);
     }
 
     function initGetUserMedia(deviceId) {
@@ -95,8 +106,7 @@
             return;
         }
 
-        if (!navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia) {
+        if (!_w.navigator.mediaDevices || !_w.navigator.mediaDevices.getUserMedia) {
 
             log('getUserMedia() not supported');
         } else {
@@ -111,58 +121,52 @@
             };
 
             // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-            navigator.mediaDevices.getUserMedia(constraints).then(playStream).catch(handleError);
+            _w.navigator.mediaDevices.getUserMedia(constraints)
+                .then(playStream)
+                .catch(handleError);
         }
-    }
-
-    function playStream(stream) {
-        _stream = stream;
-
-        video.src = vendorUrl.createObjectURL(stream);
-        video.onloadedmetadata = function(e) {
-            video.play();
-        };
-    }
-
-    function stopPlay() {
-        // disable stream
-        if (_stream != null) {
-            _stream.getTracks().forEach(function(track) {
-                track.stop();
-            });
-            _stream = null;
-        }
-        // disable video
-        video.pause();
-        video.src = '';
     }
 
     function gotDevices(deviceInfos) {
         deviceInfos.forEach(function (deviceInfo) {
             if (deviceInfo.kind === 'videoinput') {
-                sources.appendChild(createOption(deviceInfo.deviceId,
-                    deviceInfo.label ||
-                    'camera ' + (sources.length + 1)));
+                var optionTitle = deviceInfo.label || 'camera ' + (sources.length + 1);
+                sources.appendChild(createOption(deviceInfo.deviceId, optionTitle));
             }
         });
     }
 
-    function handleError(error) {
-        console.error(error);
-        log(error.message || error);
+    // main
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices
+    if (!_w.navigator.mediaDevices || !_w.navigator.mediaDevices.enumerateDevices) {
+
+        log('enumerateDevices() not supported.');
+    } else {
+
+        _w.navigator.mediaDevices.enumerateDevices()
+            .then(gotDevices)
+            .then(function () {
+                initGetUserMedia(sources.value);
+            })
+            .catch(handleError);
     }
 
-    function getFilter(value) {
-        try {
-            return filtersMap[value];
-        } catch (e) {
-            console.error(e);
-            return 'none';
-        }
-    }
+    // events
 
-    function log(message) {
-        error.innerHTML += '<br>Error: ' + message;
-    }
+    capture.addEventListener('click', function (e) {
+        _w.setTimeout(takePicture, 0);
+        e.preventDefault();
+    }, false);
 
-})();
+    sources.addEventListener('change', function (e) {
+        initGetUserMedia(e.target.value);
+        e.preventDefault();
+    }, false);
+
+    filters.addEventListener('change', function (e) {
+        video.style.filter = getFilter(e.target.value);
+        e.preventDefault();
+    }, false);
+
+}(window, window.document));
