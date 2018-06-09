@@ -164,6 +164,16 @@
         }
     }
 
+    function toggleFullScreen() {
+        if (!_d.webkitIsFullScreen) {
+            video.webkitRequestFullScreen(_w.Element.ALLOW_KEYBOARD_INPUT);
+        } else {
+            if (_d.webkitExitFullscreen) {
+                _d.webkitExitFullscreen();
+            }
+        }
+    }
+
     // main
     start();
 
@@ -189,5 +199,11 @@
         start();
         e.preventDefault();
     });
+
+    _d.addEventListener('keydown', function (e) {
+        if (e.keyCode === 13) {
+            toggleFullScreen();
+        }
+    }, false);
 
 }(window, window.document));
