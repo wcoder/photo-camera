@@ -56,8 +56,6 @@
 
     function takePicture() {
 
-        canvas.style.filter = getFilter(filters.value);
-
         var context = canvas.getContext('2d');
         if (width && height) {
             canvas.width = width;
@@ -65,6 +63,9 @@
 
             context.translate(canvas.width, 0);
             context.scale(-1, 1);
+
+            // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter
+            context.filter = getFilter(filters.value);
 
             context.drawImage(video, 0, 0, width, height);
         } else {
