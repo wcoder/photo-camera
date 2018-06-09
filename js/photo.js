@@ -11,7 +11,9 @@
         canvas = _d.querySelector('#canvas'),
         sources = _d.querySelector('#sources'),
         filters = _d.querySelector('#filters'),
+        mirroring = _d.querySelector('#mirroring'),
         error = _d.querySelector('#error'),
+        isMirroringEnabled = false,
         _stream = null,
         vendorUrl = _w.URL || _w.webkitURL,
         filtersMap = {
@@ -24,7 +26,8 @@
             brightness: 'brightness(0.5)',
             saturate: 'saturate()',
             blur: 'blur(5px)'
-        };
+        },
+        videoStyleTransform = 'scaleX(-1)';
 
     // function
 
@@ -61,8 +64,10 @@
             canvas.width = width;
             canvas.height = height;
 
-            context.translate(canvas.width, 0);
-            context.scale(-1, 1);
+            if (!isMirroringEnabled) {
+                context.translate(canvas.width, 0);
+                context.scale(-1, 1);
+            }
 
             // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter
             context.filter = getFilter(filters.value);
@@ -75,6 +80,12 @@
 
     function playStream(stream) {
         _stream = stream;
+
+        if (isMirroringEnabled) {
+            video.style.transform = 'none';
+        } else {
+            video.style.transform = videoStyleTransform;
+        }
 
         video.src = vendorUrl.createObjectURL(stream);
         video.onloadedmetadata = function () {
@@ -137,21 +148,24 @@
         });
     }
 
-    // main
+    function start() {
+        // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices
+        if (!_w.navigator.mediaDevices || !_w.navigator.mediaDevices.enumerateDevices) {
 
-    // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices
-    if (!_w.navigator.mediaDevices || !_w.navigator.mediaDevices.enumerateDevices) {
+            log('enumerateDevices() not supported.');
+        } else {
 
-        log('enumerateDevices() not supported.');
-    } else {
-
-        _w.navigator.mediaDevices.enumerateDevices()
-            .then(gotDevices)
-            .then(function () {
-                initGetUserMedia(sources.value);
-            })
-            .catch(handleError);
+            _w.navigator.mediaDevices.enumerateDevices()
+                .then(gotDevices)
+                .then(function () {
+                    initGetUserMedia(sources.value);
+                })
+                .catch(handleError);
+        }
     }
+
+    // main
+    start();
 
     // events
 
@@ -169,5 +183,11 @@
         video.style.filter = getFilter(e.target.value);
         e.preventDefault();
     }, false);
+
+    mirroring.addEventListener('change', function (e) {
+        isMirroringEnabled = e.target.checked;
+        start();
+        e.preventDefault();
+    });
 
 }(window, window.document));
