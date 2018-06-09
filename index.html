@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Demo</title>
+    <meta charset="UTF-8">
+    <title>Demo</title>
 
-	<link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
 
-	<div class="booth">
-		<video id="video" width="400" height="300"></video>
-		<canvas id="canvas" crossorigin="anonymous">
-	</div>
-	<div class="panel">
-		<button id="capture">Take photo</button>
-		<select id="sources">
-			<option value="-1" disabled>Select camera:</option>
-		</select>
-		<select id="filters">
-			<option value="-1" disabled>Select filter:</option>
-			<option value="none">None</option>
-			<option value="blackandwhite">B&W</option>
-			<option value="huerotate">Hue-Rotate</option>
-			<option value="sepia">Sepia</option>
-			<option value="invert">Invert</option>
-			<option value="contrast">Contrast 2x</option>
-			<option value="brightness">Brightness 50%</option>
-			<option value="saturate">Saturate</option>
-			<option value="blur">Blur</option>
-		</select>
-		<p id="error"></p>
-	</div>
+    <div class="booth">
+        <video id="video" width="400" height="300"></video>
+        <canvas id="canvas" crossorigin="anonymous">
+    </div>
+    <div class="panel">
+        <button id="capture">Take photo</button>
+        <select id="sources">
+            <option value="-1" disabled>Select camera:</option>
+        </select>
+        <select id="filters">
+            <option value="-1" disabled>Select filter:</option>
+            <option value="none">None</option>
+            <option value="blackandwhite">B&W</option>
+            <option value="huerotate">Hue-Rotate</option>
+            <option value="sepia">Sepia</option>
+            <option value="invert">Invert</option>
+            <option value="contrast">Contrast 2x</option>
+            <option value="brightness">Brightness 50%</option>
+            <option value="saturate">Saturate</option>
+            <option value="blur">Blur</option>
+        </select>
+        <p id="error"></p>
+    </div>
 
 
-	<svg id='image' version="1.1" xmlns="http://www.w3.org/2000/svg">
-		<defs>
+    <svg id='image' version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <defs>
 
-			<filter id="blackandwhite">
-				<feColorMatrix values="0.3333 0.3333 0.3333 0 0
-				                       0.3333 0.3333 0.3333 0 0
-				                       0.3333 0.3333 0.3333 0 0
-				                       0      0      0      1 0"/>
-			</filter>
+            <filter id="blackandwhite">
+                <feColorMatrix values="0.3333 0.3333 0.3333 0 0
+                                       0.3333 0.3333 0.3333 0 0
+                                       0.3333 0.3333 0.3333 0 0
+                                       0      0      0      1 0"/>
+            </filter>
 
-		</defs>
-	</svg>
+        </defs>
+    </svg>
 
 
-	<script src="js/photo.js"></script>
+    <script src="js/photo.js"></script>
 </body>
 </html>
