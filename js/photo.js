@@ -86,7 +86,7 @@
             video.style.transform = videoStyleTransform;
         }
 
-        video.src = stream;
+        video.srcObject = stream;
         video.onloadedmetadata = function () {
             video.play();
         };
