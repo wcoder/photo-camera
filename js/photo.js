@@ -15,7 +15,6 @@
         error = _d.querySelector('#error'),
         isMirroringEnabled = false,
         _stream = null,
-        vendorUrl = _w.URL || _w.webkitURL,
         filtersMap = {
             none: 'none',
             blackandwhite: 'url(#blackandwhite)',
@@ -87,7 +86,7 @@
             video.style.transform = videoStyleTransform;
         }
 
-        video.src = vendorUrl.createObjectURL(stream);
+        video.src = stream;
         video.onloadedmetadata = function () {
             video.play();
         };
