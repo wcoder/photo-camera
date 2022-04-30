@@ -139,10 +139,14 @@
     }
 
     function gotDevices(deviceInfos) {
+        var addedDeviceIds = [].map.call(sources.querySelectorAll('option[value]'), x => x.value);
+
         deviceInfos.forEach(function (deviceInfo) {
             if (deviceInfo.kind === 'videoinput') {
                 var optionTitle = deviceInfo.label || 'camera ' + (sources.length + 1);
-                sources.appendChild(createOption(deviceInfo.deviceId, optionTitle));
+                if (addedDeviceIds.indexOf(deviceInfo.deviceId) === -1) {
+                    sources.appendChild(createOption(deviceInfo.deviceId, optionTitle));
+                }
             }
         });
     }
