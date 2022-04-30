@@ -1,12 +1,12 @@
 /*global
     require, console, __dirname
 */
-var connect = require('connect');
-var serveStatic = require('serve-static');
+const connect = require('connect');
+const serveStatic = require('serve-static');
 
 connect()
     .use(serveStatic(__dirname))
-    .listen(8080, function () {
+    .listen(8080, () => {
         'use strict';
         console.log('Server running on 8080...');
     });

@@ -1,15 +1,12 @@
 {
   "name": "photo-camera",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple demo for taking photo from webcam with JavaScript.",
   "main": "index.js",
-  "dependencies": {
-    "connect": "^3.6.5",
-    "serve-static": "^1.13.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "connect": "^3.6.5",
-    "serve-static": "^1.13.1"
+    "connect": "^3.7.0",
+    "serve-static": "^1.15.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
