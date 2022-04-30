@@ -168,11 +168,15 @@
     }
 
     function toggleFullScreen() {
-        if (!_d.webkitIsFullScreen) {
-            video.webkitRequestFullScreen(_w.Element.ALLOW_KEYBOARD_INPUT);
+        if (!_d.fullscreenElement) {
+            video.requestFullscreen().catch(err => {
+                var errorMessage = "Error attempting to enable fullscreen mode: " + err.message + " " + err.name + "";
+                console.log(err);
+                log(errorMessage);
+              });
         } else {
-            if (_d.webkitExitFullscreen) {
-                _d.webkitExitFullscreen();
+            if (_d.exitFullscreen) {
+                _d.exitFullscreen();
             }
         }
     }
